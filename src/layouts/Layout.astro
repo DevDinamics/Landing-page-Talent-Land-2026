@@ -1,23 +1,45 @@
+---
+/* src/layouts/Layout.astro */
+interface Props {
+    title: string;
+}
+const { title } = Astro.props;
+---
+
 <!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
+<html lang="es" class="scroll-smooth bg-[#070708]"> 
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="description" content="Únete a Qualtop en Talent Land 2026" />
+        <meta name="viewport" content="width=device-width" />
+        <link rel="icon" type="image/png" href="/favicon.png" />
+        <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@400;500;700&family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+        <title>{title}</title>
+    </head>
+    
+    <body class="bg-[#070708] text-white antialiased"> 
+        <slot />
+    </body>
 </html>
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
+<style is:global>
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
+
+    html {
+        font-family: 'Poppins', sans-serif;
+    }
+
+    /* Mejora el scrollbar para que se vea tech */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+        background: #070708;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #E63B11;
+        border-radius: 10px;
+    }
 </style>

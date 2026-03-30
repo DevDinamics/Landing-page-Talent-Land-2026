@@ -1,11 +1,41 @@
 ---
-import Welcome from '../components/Welcome.astro';
+/* src/pages/index.astro */
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import Navbar from '../components/Navbar.astro';
+import Hero from '../components/Hero.astro';
+import TechBackground3D from '../components/Fondo3D.jsx'; // Tus partículas
+import Crecimiento from '../components/Crecimiento.astro';
+import Beneficios from '../components/Beneficios.astro';
+import FormSection from '../components/FormSection.astro';
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Qualtop | Talent Land México 2026">
+    
+    <TechBackground3D client:load />
+
+    <main class="relative z-10 w-full flex flex-col items-center bg-transparent">
+        
+        <div class="w-full max-w-7xl mx-auto px-6 pt-12">
+            <Navbar />
+            <Hero />
+        </div>
+
+        <div class="w-full bg-[#070708] relative z-20">
+            
+            <Crecimiento />
+            
+            <div class="max-w-7xl mx-auto px-6 py-12">
+                <Beneficios />
+                <FormSection />
+            </div>
+
+            <footer class="w-full mt-24 py-10 border-t border-white/10 text-center">
+                <p class="text-sm font-barlow text-gray-400 tracking-wide">
+                    &copy; {new Date().getFullYear()} Qualtop S.A. de C.V. Todos los derechos reservados.
+                </p>
+            </footer>
+
+        </div>
+
+    </main>
 </Layout>

@@ -1,0 +1,172 @@
+---
+/* Hero.astro - Nivel PRO Qualtop (Orange Button Version) */
+---
+
+<section class="relative text-center mb-10 md:mb-20 pt-10 min-h-[85vh] md:min-h-[70vh] flex flex-col items-center overflow-hidden">
+  
+  <div id="hero-title-parallax" class="absolute top-16 md:top-10 left-0 right-0 z-0 flex justify-center pointer-events-none origin-top px-4">
+    <h1 class="text-5xl sm:text-6xl md:text-8xl font-black font-poppins tracking-tighter leading-[0.85] md:leading-none">
+      <span 
+        class="text-transparent block"
+        style="-webkit-text-stroke: 1px rgba(255,255,255,0.6);"
+      >
+        TALENTO +
+      </span>
+      <span class="text-qualtop-primary block">TECNOLOGÍA:</span>
+    </h1>
+  </div>
+
+  <div class="relative z-10 max-w-4xl mx-auto space-y-6 mt-[200px] sm:mt-[220px] md:mt-[300px] bg-[#070708]/60 md:bg-[#070708]/80 backdrop-blur-md pt-8 md:pt-10 pb-8 px-6 rounded-3xl border border-white/5 md:border-none">
+    
+    <h2 class="text-xl md:text-3xl font-montserrat font-medium text-white leading-tight">
+      Soluciones que mueven al mundo
+    </h2>
+    
+    <p class="max-w-2xl mx-auto text-qualtop-grayLight leading-relaxed font-barlow text-base md:text-lg px-2">
+      En Qualtop, sabemos que las grandes soluciones nacen cuando las mentes brillantes tienen las herramientas correctas. Crea soluciones de alto impacto respaldado por la tecnología de <span class="text-white font-bold">Google Cloud y Oracle.</span>
+    </p>
+
+    <div class="pt-6 flex justify-center">
+      <a href="#registro" class="generate-button group no-underline">
+        <svg class="dots absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 200 60"></svg>
+        
+        <div class="relative z-10 flex items-center gap-3">
+          <svg class="icon w-5 h-5 md:w-6 md:h-6 text-black group-hover:scale-110 transition-transform duration-300" viewBox="0 0 24 26">
+            <path d="M5.16 2.62L5.81 1c.03-.08.11-.13.2-.13s.17.05.2.13l.64 1.62 1.6.65c.08.03.13.11.13.2s-.05.17-.13.2l-1.6.65-.64 1.62c-.03.08-.11.13-.2.13s-.17-.05-.2-.13L5.16 4.31l-1.6-.65c-.08-.03-.13-.11-.13-.2s.05-.17.13-.2l1.6-.65z" fill="currentColor"></path>
+            <path d="M11.24 9.44c.31-.14.56-.39.7-.7l1.61-3.62c.17-.38.54-.62.95-.62s.78.24.95.62l1.61 3.62c.14.31.39.56.7.7l3.62 1.61c.38.17.62.54.62.95s-.24.78-.62.95l-3.62 1.61c-.31.14-.56.39-.7.7l-1.61 3.62c-.17.38-.54.62-.95.62s-.78-.24-.95-.62l-1.61-3.62c-.14-.31-.39-.56-.7-.7L7.62 12.95c-.38-.17-.62-.54-.62-.95s.24-.78.62-.95l3.62-1.61z" fill="currentColor"></path>
+          </svg>
+          <span class="font-poppins font-bold text-base md:text-xl tracking-[0.1em] text-white">¡ACEPTO EL RETO!</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* 🎨 Estilos del Botón "Orange Qualtop" */
+  .generate-button {
+    appearance: none;
+    outline: none;
+    border: none;
+    padding: 16px 32px;
+    md-padding: 18px 42px;
+    border-radius: 50px;
+    /* 🚀 FONDO NARANJA QUALTOP SÓLIDO */
+    background-color: #E63B11;
+    display: flex;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+    z-index: 1;
+    transition: transform .3s, background-color .3s, box-shadow .3s;
+    /* Sombras sutiles para dar profundidad sobre el fondo negro */
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 320px;
+    justify-content: center;
+  }
+
+  @media (min-width: 640px) {
+    .generate-button { width: auto; max-width: none; }
+  }
+
+  /* Brillo de suelo (Glow naranja) - Lo mantenemos porque es PRO */
+  .generate-button:before {
+    content: '';
+    position: absolute;
+    right: 20%; left: 20%; bottom: -10px;
+    height: 20px;
+    background: #E63B11;
+    filter: blur(15px);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity .4s;
+  }
+
+  .generate-button .dots {
+    /* 🚀 Las partículas ahora son blancas para que resalten sobre el naranja */
+    fill: #ffffff;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .generate-button:hover {
+    transform: scale(1.05);
+    /* Fondo ligeramente más claro al hover para dar profundidad */
+    background-color: #ff4b23;
+    /* Glow naranja más intenso al hover */
+    box-shadow: 0px 0px 40px rgba(230, 59, 17, 0.4);
+  }
+
+  .generate-button:hover:before { opacity: 0.6; }
+  .generate-button:hover .dots { opacity: 1; }
+  .generate-button:active { transform: scale(0.98); }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+
+  // --- 1. Lógica de Parallax del Título ---
+  window.addEventListener('scroll', () => {
+    const heroTitle = document.getElementById('hero-title-parallax');
+    if (heroTitle) {
+      const scrollY = window.scrollY;
+      const isMobile = window.innerWidth < 768;
+      const moveY = scrollY * (isMobile ? 0.3 : 0.4); 
+      const opacity = Math.max(1 - (scrollY / (isMobile ? 300 : 400)), 0);
+      heroTitle.style.transform = `translateY(${moveY}px)`;
+      heroTitle.style.opacity = opacity.toString();
+    }
+  });
+
+  // --- 2. Lógica de Partículas GSAP del Botón ---
+  const DOT_AMOUNT = 30;
+  document.querySelectorAll(".generate-button").forEach((button) => {
+    const svg = button.querySelector(".dots");
+    if (!svg) return;
+    
+    // Casteo explícito a HTMLElement para obtener offsetWidth/offsetHeight
+    const width = (button as HTMLElement).offsetWidth;
+    const height = (button as HTMLElement).offsetHeight;
+
+    // Crear partículas aleatorias
+    for (let i = 0; i < DOT_AMOUNT; i++) {
+      const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      gsap.set(circle, {
+        attr: {
+          cx: gsap.utils.random(width * 0.2, width * 0.8),
+          cy: height / 2,
+          r: 0
+        }
+      });
+      svg.appendChild(circle);
+    }
+
+    const circles = svg.querySelectorAll("circle");
+    const timeline = gsap.timeline({ paused: true });
+
+    // Animación de partículas flotando (velocidad Qualtop)
+    circles.forEach((circle, i) => {
+      const duration = gsap.utils.random(1.5, 2.5);
+      timeline.to(circle, {
+        duration: duration,
+        repeat: -1,
+        ease: "power1.out",
+        attr: {
+          r: gsap.utils.random(1, 2.5),
+          cy: gsap.utils.random(-20, -60), // Flotan hacia arriba
+          cx: `+=${gsap.utils.random(-40, 40)}` // Se dispersan un poco
+        },
+        opacity: 0,
+        delay: i * 0.1
+      }, 0);
+    });
+
+    button.addEventListener("mouseenter", () => timeline.play());
+    button.addEventListener("mouseleave", () => {
+      timeline.pause();
+      // Resetear partículas al salir
+      gsap.to(circles, { opacity: 0, duration: 0.3, attr: { r: 0 } });
+    });
+  });
+</script>

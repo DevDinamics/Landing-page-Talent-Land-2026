@@ -1,0 +1,10 @@
+/* src/styles/global.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Un pequeño extra para asegurarnos que el fondo siempre sea oscuro profundo */
+html {
+  background-color: #07080A; /* El negro oficial de tu manual */
+  color: white;
+}
