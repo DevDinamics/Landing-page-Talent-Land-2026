@@ -1,8 +1,22 @@
 import React, { useState } from 'react';
-import { User, Mail, Code2, UploadCloud, Link as LinkIcon, MessageSquare, CheckCircle2, FileText } from 'lucide-react';
+import { User, Mail, Code2, UploadCloud, Link as LinkIcon, MessageSquare, CheckCircle2, FileText, Loader2 } from 'lucide-react';
+
+// 🚀 Función PRO para convertir el PDF a Base64
+const fileToBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      const base64String = reader.result.split(',')[1]; 
+      resolve(base64String);
+    };
+    reader.onerror = (error) => reject(error);
+  });
+};
 
 export default function FormularioCV() {
   const [enviado, setEnviado] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false); // Estado de carga
   const [fileName, setFileName] = useState("");
   const [isHovering, setIsHovering] = useState(false);
 
@@ -12,9 +26,72 @@ export default function FormularioCV() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setEnviado(true);
+    setIsSubmitting(true); // Arrancamos el loader del botón
+    
+    // Capturamos los elementos del formulario de forma segura por su 'name'
+    const elements = e.target.elements;
+    const fileInput = elements.cv;
+    const file = fileInput.files[0];
+
+    let fileBase64 = "";
+    let fileMimeType = "";
+    let finalFileName = "";
+
+    // Procesamos el CV si existe
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert("El CV es muy pesado. Máximo 5MB por favor.");
+        setIsSubmitting(false);
+        return; 
+      }
+      fileBase64 = await fileToBase64(file);
+      fileMimeType = file.type;
+      // Limpiamos los espacios del nombre para el archivo en Drive
+      const nombreLimpio = elements.nombre.value.replace(/\s+/g, '_');
+      finalFileName = `${nombreLimpio}_CV_${file.name}`;
+    }
+
+    // Armamos el paquete de datos
+    const formData = {
+      nombre: elements.nombre.value,
+      email: elements.email.value,
+      area: elements.area.value,
+      link: elements.link.value,
+      meta: elements.meta.value,
+      fileBase64: fileBase64,
+      fileName: finalFileName,
+      fileMimeType: fileMimeType
+    };
+
+    try {
+      // Pega tu URL AQUÍ
+      const response = await fetch('https://script.google.com/macros/s/AKfycbxGqbRtGKFe_AFOOxRtRh2uerAAJYN40hG-VWp7LZwp3HPkZCYqDDASTQzYaODBnlfh/exec', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8', 
+        },
+        body: JSON.stringify(formData),
+      });
+
+      // 🚀 VAMOS A LEER LA RESPUESTA DE GOOGLE
+      const dataServer = await response.json();
+      console.log("Respuesta de Google:", dataServer);
+
+      if (dataServer.result === "error") {
+        alert("Google devolvió un error: " + dataServer.error);
+        setIsSubmitting(false);
+        return;
+      }
+
+      setEnviado(true);
+    } catch (error) {
+      console.error("Error al guardar:", error);
+      alert("Hubo un problema de conexión. Inténtalo de nuevo.");
+    } finally {
+      setIsSubmitting(false); // Apagamos el loader
+    }
   };
 
   if (enviado) {
@@ -41,9 +118,9 @@ export default function FormularioCV() {
         <label className="block text-gray-400 mb-2 ml-1 font-semibold uppercase tracking-widest text-[10px] md:text-xs">Nombre:</label>
         <div className="relative">
           <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 group-focus-within:text-[#E63B11] transition-colors" />
-          {/* Corregido: py-3.5 md:py-4 pr-4 pl-12 asegura que el margen izquierdo nunca se borre */}
           <input 
             type="text" 
+            name="nombre" /* 🚀 Agregado */
             placeholder="¿Cómo quieres que te llamemos?" 
             required 
             className="w-full bg-[#111113] text-white border border-gray-800 py-3.5 md:py-4 pr-4 pl-12 rounded-xl focus:ring-1 focus:ring-[#E63B11] focus:border-[#E63B11] outline-none transition-all placeholder:text-gray-600 shadow-inner text-sm md:text-base" 
@@ -58,6 +135,7 @@ export default function FormularioCV() {
           <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 group-focus-within:text-[#E63B11] transition-colors" />
           <input 
             type="email" 
+            name="email" /* 🚀 Agregado */
             placeholder="Donde te contactaremos" 
             required 
             className="w-full bg-[#111113] text-white border border-gray-800 py-3.5 md:py-4 pr-4 pl-12 rounded-xl focus:ring-1 focus:ring-[#E63B11] focus:border-[#E63B11] outline-none transition-all placeholder:text-gray-600 shadow-inner text-sm md:text-base" 
@@ -70,7 +148,7 @@ export default function FormularioCV() {
         <label className="block text-gray-400 mb-2 ml-1 font-semibold uppercase tracking-widest text-[10px] md:text-xs">Tu área de interés:</label>
         <div className="relative">
           <Code2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 group-focus-within:text-[#E63B11] transition-colors z-10" />
-          <select required className="w-full bg-[#111113] text-white border border-gray-800 py-3.5 md:py-4 pr-10 pl-12 rounded-xl focus:ring-1 focus:ring-[#E63B11] focus:border-[#E63B11] outline-none cursor-pointer appearance-none transition-all shadow-inner relative text-sm md:text-base">
+          <select name="area" required className="w-full bg-[#111113] text-white border border-gray-800 py-3.5 md:py-4 pr-10 pl-12 rounded-xl focus:ring-1 focus:ring-[#E63B11] focus:border-[#E63B11] outline-none cursor-pointer appearance-none transition-all shadow-inner relative text-sm md:text-base">
             <option value="" className="text-gray-500">Selecciona una opción...</option>
             <option value="web">Desarrollo Web (Astro/React)</option>
             <option value="sap">SAP ABAP</option>
@@ -90,6 +168,7 @@ export default function FormularioCV() {
           <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 group-focus-within:text-[#E63B11] transition-colors" />
           <input 
             type="url" 
+            name="link" /* 🚀 Agregado */
             placeholder="Link a LinkedIn o GitHub" 
             className="w-full bg-[#111113] text-white border border-gray-800 py-3.5 md:py-4 pr-4 pl-12 rounded-xl focus:ring-1 focus:ring-[#E63B11] focus:border-[#E63B11] outline-none transition-all placeholder:text-gray-600 shadow-inner text-sm md:text-base" 
           />
@@ -106,6 +185,7 @@ export default function FormularioCV() {
         >
           <input 
             type="file" 
+            name="cv" /* 🚀 Agregado */
             accept=".pdf" 
             onChange={handleFileChange}
             required 
@@ -139,6 +219,7 @@ export default function FormularioCV() {
         <div className="relative">
           <MessageSquare className="absolute left-4 top-4 md:top-5 w-5 h-5 text-gray-500 group-focus-within:text-[#E63B11] transition-colors" />
           <textarea 
+            name="meta" /* 🚀 Agregado */
             rows="3" 
             placeholder="¿En qué proyecto te gustaría participar?" 
             className="w-full bg-[#111113] text-white border border-gray-800 py-3.5 md:py-4 pr-4 pl-12 rounded-xl focus:ring-1 focus:ring-[#E63B11] focus:border-[#E63B11] outline-none transition-all placeholder:text-gray-600 resize-none shadow-inner text-sm md:text-base"
@@ -146,14 +227,23 @@ export default function FormularioCV() {
         </div>
       </div>
 
-      {/* Botón */}
+      {/* 🚀 Botón con estado de carga */}
       <button 
         type="submit" 
-        className="group relative w-full py-3.5 md:py-4 bg-gradient-to-r from-[#E63B11] to-[#ff4b23] text-white font-black font-poppins rounded-xl text-base md:text-lg shadow-[0_0_20px_rgba(230,59,17,0.3)] hover:shadow-[0_0_30px_rgba(230,59,17,0.6)] hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 mt-2 md:mt-4 uppercase tracking-widest overflow-hidden md:col-span-2"
+        disabled={isSubmitting}
+        className={`group relative w-full py-3.5 md:py-4 bg-gradient-to-r from-[#E63B11] to-[#ff4b23] text-white font-black font-poppins rounded-xl text-base md:text-lg shadow-[0_0_20px_rgba(230,59,17,0.3)] transition-all duration-300 mt-2 md:mt-4 uppercase tracking-widest overflow-hidden md:col-span-2 ${isSubmitting ? 'opacity-80 cursor-wait' : 'hover:shadow-[0_0_30px_rgba(230,59,17,0.6)] hover:-translate-y-1 active:scale-[0.98]'}`}
       >
-        <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></div>
+        {!isSubmitting && <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></div>}
+        
         <span className="relative z-10 flex items-center justify-center gap-2">
-          ¡Conectar con Qualtop!
+          {isSubmitting ? (
+            <>
+              <Loader2 className="w-5 h-5 md:w-6 md:h-6 animate-spin" />
+              Procesando...
+            </>
+          ) : (
+            "¡Conectar con Qualtop!"
+          )}
         </span>
       </button>
 
