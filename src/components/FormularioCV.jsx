@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-// 🚀 Agregamos el ícono Phone a la importación
-import { User, Mail, Code2, UploadCloud, Link as LinkIcon, MessageSquare, CheckCircle2, FileText, Loader2, Phone } from 'lucide-react';
+// 🚀 Cambiamos MessageSquare por Briefcase
+import { User, Mail, Code2, UploadCloud, Link as LinkIcon, Briefcase, CheckCircle2, FileText, Loader2, Phone } from 'lucide-react';
 
 const fileToBase64 = (file) => {
   return new Promise((resolve, reject) => {
@@ -50,20 +50,21 @@ export default function FormularioCV() {
       finalFileName = `${nombreLimpio}_CV_${file.name}`;
     }
 
-    // 🚀 Actualizamos el paquete de datos con teléfono y tecnologías
+   
     const formData = {
       nombre: elements.nombre.value,
       email: elements.email.value,
       telefono: elements.telefono.value,
       tecnologias: elements.tecnologias.value,
       link: elements.link.value,
-      meta: elements.meta.value,
+      oportunidades: elements.oportunidades.value, 
       fileBase64: fileBase64,
       fileName: finalFileName,
       fileMimeType: fileMimeType
     };
 
     try {
+        // URL del endpoint de Google Apps Script
       const response = await fetch('https://script.google.com/macros/s/AKfycbxGqbRtGKFe_AFOOxRtRh2uerAAJYN40hG-VWp7LZwp3HPkZCYqDDASTQzYaODBnlfh/exec', {
         method: 'POST',
         headers: {
@@ -139,7 +140,7 @@ export default function FormularioCV() {
         </div>
       </div>
 
-      {/* 🚀 NUEVO: Teléfono */}
+      {/* Teléfono */}
       <div className="relative group col-span-1">
         <label className="block text-gray-400 mb-2 ml-1 font-semibold uppercase tracking-widest text-[10px] md:text-xs">Teléfono:</label>
         <div className="relative">
@@ -154,7 +155,7 @@ export default function FormularioCV() {
         </div>
       </div>
 
-      {/* 🚀 MODIFICADO: Tecnologías en lugar de Área */}
+      {/* Tecnologías */}
       <div className="relative group col-span-1">
         <label className="block text-gray-400 mb-2 ml-1 font-semibold uppercase tracking-widest text-[10px] md:text-xs">¿Qué tecnologías dominas?:</label>
         <div className="relative">
@@ -169,7 +170,7 @@ export default function FormularioCV() {
         </div>
       </div>
 
-      {/* Links (Ajustado a col-span-2 para balancear el grid) */}
+      {/* Links */}
       <div className="relative group md:col-span-2">
         <label className="block text-gray-400 mb-2 ml-1 font-semibold uppercase tracking-widest text-[10px] md:text-xs">Presume tu talento:</label>
         <div className="relative">
@@ -221,17 +222,24 @@ export default function FormularioCV() {
         </div>
       </div>
 
-      {/* Meta */}
+      {/* 🚀 NUEVO: Oportunidades  */}
       <div className="relative group md:col-span-2">
-        <label className="block text-gray-400 mb-2 ml-1 font-semibold uppercase tracking-widest text-[10px] md:text-xs">Cuéntanos tu meta:</label>
+        <label className="block text-gray-400 mb-2 ml-1 font-semibold uppercase tracking-widest text-[10px] md:text-xs">¿Te gustaría que te contactemos con oportunidades?</label>
         <div className="relative">
-          <MessageSquare className="absolute left-4 top-4 md:top-5 w-5 h-5 text-gray-500 group-focus-within:text-[#E63B11] transition-colors" />
-          <textarea 
-            name="meta" 
-            rows="3" 
-            placeholder="¿En qué proyecto te gustaría participar?" 
-            className="w-full bg-[#111113] text-white border border-gray-800 py-3.5 md:py-4 pr-4 pl-12 rounded-xl focus:ring-1 focus:ring-[#E63B11] focus:border-[#E63B11] outline-none transition-all placeholder:text-gray-600 resize-none shadow-inner text-sm md:text-base"
-          ></textarea>
+          <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 group-focus-within:text-[#E63B11] transition-colors z-10" />
+          <select 
+            name="oportunidades" 
+            required 
+            className="w-full bg-[#111113] text-white border border-gray-800 py-3.5 md:py-4 pr-10 pl-12 rounded-xl focus:ring-1 focus:ring-[#E63B11] focus:border-[#E63B11] outline-none cursor-pointer appearance-none transition-all shadow-inner relative text-sm md:text-base"
+          >
+            <option value="" className="text-gray-500">Selecciona una opción...</option>
+            <option value="Activamente buscando">Sí, estoy buscando trabajo activamente</option>
+            <option value="Interesado a futuro">Sí, me interesan oportunidades a futuro</option>
+            <option value="Solo conociendo">No por ahora, solo estoy conociendo</option>
+          </select>
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+            <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+          </div>
         </div>
       </div>
 
