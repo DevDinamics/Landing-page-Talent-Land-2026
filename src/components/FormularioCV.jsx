@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { User, Mail, Code2, UploadCloud, Link as LinkIcon, MessageSquare, CheckCircle2, FileText, Loader2 } from 'lucide-react';
+// 🚀 Agregamos el ícono Phone a la importación
+import { User, Mail, Code2, UploadCloud, Link as LinkIcon, MessageSquare, CheckCircle2, FileText, Loader2, Phone } from 'lucide-react';
 
-// 🚀 Función PRO para convertir el PDF a Base64
 const fileToBase64 = (file) => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -16,7 +16,7 @@ const fileToBase64 = (file) => {
 
 export default function FormularioCV() {
   const [enviado, setEnviado] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false); // Estado de carga
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [fileName, setFileName] = useState("");
   const [isHovering, setIsHovering] = useState(false);
 
@@ -28,9 +28,8 @@ export default function FormularioCV() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true); // Arrancamos el loader del botón
+    setIsSubmitting(true);
     
-    // Capturamos los elementos del formulario de forma segura por su 'name'
     const elements = e.target.elements;
     const fileInput = elements.cv;
     const file = fileInput.files[0];
@@ -39,7 +38,6 @@ export default function FormularioCV() {
     let fileMimeType = "";
     let finalFileName = "";
 
-    // Procesamos el CV si existe
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
         alert("El CV es muy pesado. Máximo 5MB por favor.");
@@ -48,16 +46,16 @@ export default function FormularioCV() {
       }
       fileBase64 = await fileToBase64(file);
       fileMimeType = file.type;
-      // Limpiamos los espacios del nombre para el archivo en Drive
       const nombreLimpio = elements.nombre.value.replace(/\s+/g, '_');
       finalFileName = `${nombreLimpio}_CV_${file.name}`;
     }
 
-    // Armamos el paquete de datos
+    // 🚀 Actualizamos el paquete de datos con teléfono y tecnologías
     const formData = {
       nombre: elements.nombre.value,
       email: elements.email.value,
-      area: elements.area.value,
+      telefono: elements.telefono.value,
+      tecnologias: elements.tecnologias.value,
       link: elements.link.value,
       meta: elements.meta.value,
       fileBase64: fileBase64,
@@ -66,7 +64,6 @@ export default function FormularioCV() {
     };
 
     try {
-      // Pega tu URL AQUÍ
       const response = await fetch('https://script.google.com/macros/s/AKfycbxGqbRtGKFe_AFOOxRtRh2uerAAJYN40hG-VWp7LZwp3HPkZCYqDDASTQzYaODBnlfh/exec', {
         method: 'POST',
         headers: {
@@ -75,7 +72,6 @@ export default function FormularioCV() {
         body: JSON.stringify(formData),
       });
 
-      // 🚀 VAMOS A LEER LA RESPUESTA DE GOOGLE
       const dataServer = await response.json();
       console.log("Respuesta de Google:", dataServer);
 
@@ -90,7 +86,7 @@ export default function FormularioCV() {
       console.error("Error al guardar:", error);
       alert("Hubo un problema de conexión. Inténtalo de nuevo.");
     } finally {
-      setIsSubmitting(false); // Apagamos el loader
+      setIsSubmitting(false); 
     }
   };
 
@@ -120,7 +116,7 @@ export default function FormularioCV() {
           <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 group-focus-within:text-[#E63B11] transition-colors" />
           <input 
             type="text" 
-            name="nombre" /* 🚀 Agregado */
+            name="nombre" 
             placeholder="¿Cómo quieres que te llamemos?" 
             required 
             className="w-full bg-[#111113] text-white border border-gray-800 py-3.5 md:py-4 pr-4 pl-12 rounded-xl focus:ring-1 focus:ring-[#E63B11] focus:border-[#E63B11] outline-none transition-all placeholder:text-gray-600 shadow-inner text-sm md:text-base" 
@@ -135,7 +131,7 @@ export default function FormularioCV() {
           <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 group-focus-within:text-[#E63B11] transition-colors" />
           <input 
             type="email" 
-            name="email" /* 🚀 Agregado */
+            name="email" 
             placeholder="Donde te contactaremos" 
             required 
             className="w-full bg-[#111113] text-white border border-gray-800 py-3.5 md:py-4 pr-4 pl-12 rounded-xl focus:ring-1 focus:ring-[#E63B11] focus:border-[#E63B11] outline-none transition-all placeholder:text-gray-600 shadow-inner text-sm md:text-base" 
@@ -143,39 +139,51 @@ export default function FormularioCV() {
         </div>
       </div>
 
-      {/* Área de Interés */}
+      {/* 🚀 NUEVO: Teléfono */}
       <div className="relative group col-span-1">
-        <label className="block text-gray-400 mb-2 ml-1 font-semibold uppercase tracking-widest text-[10px] md:text-xs">Tu área de interés:</label>
+        <label className="block text-gray-400 mb-2 ml-1 font-semibold uppercase tracking-widest text-[10px] md:text-xs">Teléfono:</label>
         <div className="relative">
-          <Code2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 group-focus-within:text-[#E63B11] transition-colors z-10" />
-          <select name="area" required className="w-full bg-[#111113] text-white border border-gray-800 py-3.5 md:py-4 pr-10 pl-12 rounded-xl focus:ring-1 focus:ring-[#E63B11] focus:border-[#E63B11] outline-none cursor-pointer appearance-none transition-all shadow-inner relative text-sm md:text-base">
-            <option value="" className="text-gray-500">Selecciona una opción...</option>
-            <option value="web">Desarrollo Web (Astro/React)</option>
-            <option value="sap">SAP ABAP</option>
-            <option value="data">Data & AI</option>
-            <option value="cloud">Cloud Architecture</option>
-          </select>
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-            <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-          </div>
+          <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 group-focus-within:text-[#E63B11] transition-colors" />
+          <input 
+            type="tel" 
+            name="telefono" 
+            placeholder="Tu número de contacto" 
+            required 
+            className="w-full bg-[#111113] text-white border border-gray-800 py-3.5 md:py-4 pr-4 pl-12 rounded-xl focus:ring-1 focus:ring-[#E63B11] focus:border-[#E63B11] outline-none transition-all placeholder:text-gray-600 shadow-inner text-sm md:text-base" 
+          />
         </div>
       </div>
 
-      {/* Links */}
+      {/* 🚀 MODIFICADO: Tecnologías en lugar de Área */}
       <div className="relative group col-span-1">
+        <label className="block text-gray-400 mb-2 ml-1 font-semibold uppercase tracking-widest text-[10px] md:text-xs">¿Qué tecnologías dominas?:</label>
+        <div className="relative">
+          <Code2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 group-focus-within:text-[#E63B11] transition-colors z-10" />
+          <input 
+            type="text" 
+            name="tecnologias" 
+            placeholder="Ej: React, AWS, Python, SAP..." 
+            required 
+            className="w-full bg-[#111113] text-white border border-gray-800 py-3.5 md:py-4 pr-4 pl-12 rounded-xl focus:ring-1 focus:ring-[#E63B11] focus:border-[#E63B11] outline-none transition-all placeholder:text-gray-600 shadow-inner text-sm md:text-base" 
+          />
+        </div>
+      </div>
+
+      {/* Links (Ajustado a col-span-2 para balancear el grid) */}
+      <div className="relative group md:col-span-2">
         <label className="block text-gray-400 mb-2 ml-1 font-semibold uppercase tracking-widest text-[10px] md:text-xs">Presume tu talento:</label>
         <div className="relative">
           <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 group-focus-within:text-[#E63B11] transition-colors" />
           <input 
             type="url" 
-            name="link" /* 🚀 Agregado */
+            name="link" 
             placeholder="Link a LinkedIn o GitHub" 
             className="w-full bg-[#111113] text-white border border-gray-800 py-3.5 md:py-4 pr-4 pl-12 rounded-xl focus:ring-1 focus:ring-[#E63B11] focus:border-[#E63B11] outline-none transition-all placeholder:text-gray-600 shadow-inner text-sm md:text-base" 
           />
         </div>
       </div>
 
-      {/* 📎 SECCIÓN DE CV */}
+      {/* SECCIÓN DE CV */}
       <div className="relative md:col-span-2 mt-2 md:mt-0">
         <label className="block text-gray-400 mb-2 ml-1 font-semibold uppercase tracking-widest text-[10px] md:text-xs">Tu Currículum (PDF):</label>
         <div 
@@ -185,7 +193,7 @@ export default function FormularioCV() {
         >
           <input 
             type="file" 
-            name="cv" /* 🚀 Agregado */
+            name="cv" 
             accept=".pdf" 
             onChange={handleFileChange}
             required 
@@ -219,7 +227,7 @@ export default function FormularioCV() {
         <div className="relative">
           <MessageSquare className="absolute left-4 top-4 md:top-5 w-5 h-5 text-gray-500 group-focus-within:text-[#E63B11] transition-colors" />
           <textarea 
-            name="meta" /* 🚀 Agregado */
+            name="meta" 
             rows="3" 
             placeholder="¿En qué proyecto te gustaría participar?" 
             className="w-full bg-[#111113] text-white border border-gray-800 py-3.5 md:py-4 pr-4 pl-12 rounded-xl focus:ring-1 focus:ring-[#E63B11] focus:border-[#E63B11] outline-none transition-all placeholder:text-gray-600 resize-none shadow-inner text-sm md:text-base"
@@ -227,7 +235,7 @@ export default function FormularioCV() {
         </div>
       </div>
 
-      {/* 🚀 Botón con estado de carga */}
+      {/* Botón */}
       <button 
         type="submit" 
         disabled={isSubmitting}
