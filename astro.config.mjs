@@ -1,12 +1,10 @@
 import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import react from '@astrojs/react';
-import vercel from '@astrojs/vercel'; 
 
 export default defineConfig({
-  
+  // 🚀 Eliminamos el adapter y el import de vercel
   output: 'static', 
-  adapter: vercel(), 
   integrations: [
     tailwind(), 
     react()
