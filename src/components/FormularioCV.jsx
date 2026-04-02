@@ -65,7 +65,7 @@ export default function FormularioCV() {
 
     try {
         // URL del endpoint de Google Apps Script
-      const response = await fetch('https://script.google.com/macros/s/AKfycbxGqbRtGKFe_AFOOxRtRh2uerAAJYN40hG-VWp7LZwp3HPkZCYqDDASTQzYaODBnlfh/exec', {
+      const response = await fetch('https://script.google.com/macros/s/AKfycby2FUckw00nn_CHA6blljUBjdwXLGgg5KyJvzdALexo4ACvgNkRjEVfy6YKpp8KBi-MjQ/exec', {
         method: 'POST',
         headers: {
           'Content-Type': 'text/plain;charset=utf-8', 
@@ -197,7 +197,7 @@ export default function FormularioCV() {
             name="cv" 
             accept=".pdf" 
             onChange={handleFileChange}
-            required 
+             
             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
           />
           <div className={`w-full border-2 border-dashed p-6 md:p-8 rounded-xl flex flex-col items-center justify-center transition-all duration-300 
